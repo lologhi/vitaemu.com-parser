@@ -3,6 +3,7 @@
 namespace AppBundle\Command;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ClientException;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -44,7 +45,11 @@ class GitHubParserCommand extends ContainerAwareCommand
         $updates = array();
 
         foreach ($repos as $repo) {
-            $response = $client->get('search/issues?access_token=' . $token . '&q='.$search.'+repo:'.$repo['full_name'].'+updated:>='.$now->sub(new \DateInterval('P1D'))->format('Y-m-d'));
+            try {
+                $response = $client->get('search/issues?access_token=' . $token . '&q=' . $search . '+repo:' . $repo['full_name'] . '+updated:>=' . $now->sub(new \DateInterval('P1D'))->format('Y-m-d'));
+            } catch (ClientException $e) {
+                $output->writeln($e->getMessage());
+            }
             $issues = json_decode($response->getBody(), true);
 
             if (0 === $issues['total_count']) {
