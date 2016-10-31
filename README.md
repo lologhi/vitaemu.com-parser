@@ -16,3 +16,9 @@ php bin/console script:github:parse libretro vita
 ```
 
 And it then generates a Markdown ready to be used by a Jekyll. So it's doing all the job for VitaEmu.com :-)
+
+My ugly crontab :
+
+```
+0 10 * * * cd path/to/vitaemu.com-parser && php bin/console script:github:parse libretro vita && cd path/to/vitaemu.com && git push
+```
