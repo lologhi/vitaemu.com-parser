@@ -68,19 +68,27 @@ class GitHubParserCommand extends ContainerAwareCommand
                 );
             }
 
-            $updates[$repo['name']] = $repoEvents;
+            if (array() !== $repoEvents) {
+                $updates[$repo['name']] = $repoEvents;
+            }
         }
 
         $file = $exportFolder . $now->format('Y-m-d').'-libretro-github-vita-emulator-related-events.markdown';
 
         $header = '---'.PHP_EOL;
         $header .= 'layout: post'.PHP_EOL;
-        $header .= 'title:  "'.$now->format('F dS').' libretro updates concerning PS Vita emulation and emulators"'.PHP_EOL;
+        $header .= 'title:  "'.$now->format('F dS'). (array() === $updates ? ', no' : '') .' libretro updates concerning PS Vita emulation and emulators"'.PHP_EOL;
         $header .= 'date:   '.$now->format('Y-m-d H:i:s O').PHP_EOL;
         $header .= 'categories: vita emulation'.PHP_EOL;
         $header .= '---'.PHP_EOL.PHP_EOL;
 
         file_put_contents($file, $header, FILE_APPEND);
+
+        if (array() === $updates) {
+            file_put_contents($file, 'No updates today!'.PHP_EOL, FILE_APPEND);
+
+            return 0;
+        }
 
         $content = '';
         foreach ($updates as $repo => $update) {
