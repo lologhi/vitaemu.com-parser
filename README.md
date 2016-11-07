@@ -20,5 +20,5 @@ And it then generates a Markdown ready to be used by a Jekyll. So it's doing all
 My ugly crontab :
 
 ```
-0 10 * * * cd path/to/vitaemu.com-parser && php bin/console script:github:parse libretro vita && cd path/to/vitaemu.com && git push
+0 10 * * * cd ~/vitaemu.com-parser && php bin/console script:github:parse libretro vita && git add -A && git commit -am "Last github update" && git push
 ```
